@@ -5,70 +5,95 @@ import tensorflow as tf
 import os
 import requests  # Import requests to handle the download
 
-# --- ANIMATION CONFIG ---
-floating_css = """
+# --- MATRIX BINARY RAIN ANIMATION (CSS) ---
+binary_css = """
 <style>
-/* 1. The Container */
-.particles {
+/* 1. The Container - FIXED position to cover the screen */
+.binary-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 99999; /* On top of everything */
-    pointer-events: none; /* Let clicks pass through */
-    
-    /* DEBUG BORDER: If you don't see this red border, the code isn't running! */
-    border: 5px solid red; 
+    overflow: hidden;
+    /* sitting on top of everything, but invisible to mouse clicks */
+    z-index: 99999; 
+    pointer-events: none;
 }
 
-/* 2. The Particles */
-.particles li {
+/* 2. The individual digits */
+.binary-container li {
     position: absolute;
     display: block;
     list-style: none;
-    width: 20px;
-    height: 20px;
     
-    /* HIGH CONTRAST COLOR (Black) - Change to White later if needed */
-    background: #000000; 
-    opacity: 0.8;
+    /* THE MATRIX LOOK */
+    color: #0f0; /* Neon Green */
+    font-family: 'Courier New', Courier, monospace; /* Monospace font */
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.8); /* Green glow */
+    opacity: 0; /* Start invisible below screen */
     
-    animation: floatUp 15s linear infinite;
-    bottom: -150px; /* Start below the screen */
+    /* The movement animation */
+    animation: riseUp 15s linear infinite;
+    bottom: -50px; /* Start just off-screen at the bottom */
 }
 
-/* 3. Random Positions */
-.particles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
-.particles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
-.particles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
-.particles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
-.particles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
-
-/* 4. The Movement */
-@keyframes floatUp {
+/* 3. Keyframes for upward movement */
+@keyframes riseUp {
     0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
+        transform: translateY(0);
+        opacity: 0;
+    }
+    10% {
+       opacity: 1; /* Fade in quickly at bottom */
+    }
+    90% {
+       opacity: 0.8; /* Stay visible through the middle */
     }
     100% {
-        transform: translateY(-800px) rotate(720deg);
-        opacity: 0; 
+        transform: translateY(-110vh); /* Move all the way past the top */
+        opacity: 0; /* Fade out at the top */
     }
 }
+
+/* 4. Randomizing positions, sizes, and speeds for 20 digits */
+/* Slower, bigger digits */
+.binary-container li:nth-child(1) { left: 5%; font-size: 30px; animation-duration: 18s; animation-delay: 0s; }
+.binary-container li:nth-child(2) { left: 12%; font-size: 24px; animation-duration: 15s; animation-delay: 2s; }
+.binary-container li:nth-child(3) { left: 22%; font-size: 28px; animation-duration: 20s; animation-delay: 5s; }
+.binary-container li:nth-child(4) { left: 30%; font-size: 22px; animation-duration: 16s; animation-delay: 1s; }
+.binary-container li:nth-child(5) { left: 38%; font-size: 32px; animation-duration: 19s; animation-delay: 3s; }
+.binary-container li:nth-child(6) { left: 45%; font-size: 26px; animation-duration: 14s; animation-delay: 7s; }
+.binary-container li:nth-child(7) { left: 53%; font-size: 30px; animation-duration: 22s; animation-delay: 0s; }
+.binary-container li:nth-child(8) { left: 61%; font-size: 24px; animation-duration: 17s; animation-delay: 4s; }
+.binary-container li:nth-child(9) { left: 70%; font-size: 28px; animation-duration: 21s; animation-delay: 2s; }
+.binary-container li:nth-child(10){ left: 80%; font-size: 22px; animation-duration: 15s; animation-delay: 6s; }
+
+/* Faster, smaller digits to fill gaps */
+.binary-container li:nth-child(11){ left: 8%; font-size: 18px; animation-duration: 12s; animation-delay: 9s; }
+.binary-container li:nth-child(12){ left: 18%; font-size: 16px; animation-duration: 11s; animation-delay: 1s; }
+.binary-container li:nth-child(13){ left: 28%; font-size: 20px; animation-duration: 13s; animation-delay: 4s; }
+.binary-container li:nth-child(14){ left: 34%; font-size: 14px; animation-duration: 10s; animation-delay: 8s; }
+.binary-container li:nth-child(15){ left: 42%; font-size: 18px; animation-duration: 14s; animation-delay: 2s; }
+.binary-container li:nth-child(16){ left: 58%; font-size: 16px; animation-duration: 11s; animation-delay: 5s; }
+.binary-container li:nth-child(17){ left: 66%; font-size: 20px; animation-duration: 13s; animation-delay: 1s; }
+.binary-container li:nth-child(18){ left: 75%; font-size: 14px; animation-duration: 10s; animation-delay: 3s; }
+.binary-container li:nth-child(19){ left: 88%; font-size: 18px; animation-duration: 12s; animation-delay: 7s; }
+.binary-container li:nth-child(20){ left: 95%; font-size: 16px; animation-duration: 11s; animation-delay: 0s; }
+
 </style>
 
-<ul class="particles">
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
+<ul class="binary-container">
+    <li>0</li><li>1</li><li>0</li><li>0</li><li>1</li>
+    <li>1</li><li>0</li><li>1</li><li>0</li><li>1</li>
+    <li>0</li><li>1</li><li>1</li><li>0</li><li>0</li>
+    <li>1</li><li>0</li><li>0</li><li>1</li><li>1</li>
 </ul>
 """
 
-# INJECT CSS
-st.markdown(floating_css, unsafe_allow_html=True)
+# Inject the CSS/HTML into Streamlit
+st.markdown(binary_css, unsafe_allow_html=True)
 
 # --- BACKGROUND IMAGE CSS ---
 IMAGE_URL = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop"
@@ -192,6 +217,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
