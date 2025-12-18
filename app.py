@@ -7,7 +7,7 @@ import requests  # Import requests to handle the download
 
 # --- BACKGROUND IMAGE CSS ---
 # Replace the URL below with your chosen image URL
-IMAGE_URL = "https://images.unsplash.com/photo-1580894742597-87bc8789db3d?q=80&w=2070&auto=format&fit=crop"
+IMAGE_URL = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop"
 
 background_css = f"""
 <style>
@@ -128,6 +128,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
