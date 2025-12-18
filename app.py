@@ -5,27 +5,24 @@ import tensorflow as tf
 import os
 import requests  # Import requests to handle the download
 
-# --- FLOATING BACKGROUND PARTICLES (FORCE FRONT) ---
+# --- ANIMATION CONFIG ---
 floating_css = """
 <style>
-/* 1. The Container - FORCE to top layer */
+/* 1. The Container */
 .particles {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999; /* On top of everything */
+    pointer-events: none; /* Let clicks pass through */
     
-    /* 99999 ensures it sits on top of EVERYTHING (Images, text, menus) */
-    z-index: 99999; 
-    
-    /* CRITICAL: This makes the overlay 'invisible' to your mouse. 
-       You can click buttons 'through' the particles. */
-    pointer-events: none;
+    /* DEBUG BORDER: If you don't see this red border, the code isn't running! */
+    border: 5px solid red; 
 }
 
-/* 2. The individual squares */
+/* 2. The Particles */
 .particles li {
     position: absolute;
     display: block;
@@ -33,36 +30,30 @@ floating_css = """
     width: 20px;
     height: 20px;
     
-    /* Increased opacity to 0.5 so you can DEFINITELY see them for testing */
-    background: rgba(255, 255, 255, 0.5); 
+    /* HIGH CONTRAST COLOR (Black) - Change to White later if needed */
+    background: #000000; 
+    opacity: 0.8;
     
-    animation: floatUp 25s linear infinite;
-    bottom: -150px;
+    animation: floatUp 15s linear infinite;
+    bottom: -150px; /* Start below the screen */
 }
 
-/* 3. Particle configurations */
+/* 3. Random Positions */
 .particles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
 .particles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
 .particles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
 .particles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
 .particles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
-.particles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
-.particles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
-.particles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
-.particles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
-.particles li:nth-child(10){ left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
 
-/* 4. The Animation */
+/* 4. The Movement */
 @keyframes floatUp {
     0% {
         transform: translateY(0) rotate(0deg);
         opacity: 1;
-        border-radius: 0;
     }
     100% {
-        transform: translateY(-1000px) rotate(720deg);
-        opacity: 0;
-        border-radius: 50%;
+        transform: translateY(-800px) rotate(720deg);
+        opacity: 0; 
     }
 }
 </style>
@@ -73,17 +64,13 @@ floating_css = """
     <li></li>
     <li></li>
     <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
 </ul>
 """
 
+# INJECT CSS
 st.markdown(floating_css, unsafe_allow_html=True)
+
 # --- BACKGROUND IMAGE CSS ---
-# Replace the URL below with your chosen image URL
 IMAGE_URL = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop"
 
 background_css = f"""
@@ -205,6 +192,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
