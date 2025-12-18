@@ -10,7 +10,7 @@ master_css = """
 <style>
 /* 1. MAIN BACKGROUND IMAGE */
 .stApp {
-    background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url("https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop");
+    background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url("https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop");
     background-size: cover;
     background-attachment: fixed;
 }
@@ -29,9 +29,7 @@ h1, h2, h3, p, span, div {
     height: 100vh;
     pointer-events: none; /* Allows clicks to pass through */
     z-index: 999999; /* Forces it to the very front */
-    
-    /* REMOVE THIS LINE AFTER YOU SEE THE ANIMATION: */
-    border: 5px solid red; 
+     
 }
 
 /* 4. MATRIX DIGITS */
@@ -169,6 +167,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
