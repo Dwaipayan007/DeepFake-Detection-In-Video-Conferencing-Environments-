@@ -9,7 +9,7 @@ import requests  # Import requests to handle the download
 # Replace the URL below with your chosen image URL
 IMAGE_URL = "https://images.unsplash.com/photo-1580894742597-87bc8789db3d?q=80&w=2070&auto=format&fit=crop"
 
-background_css = f """
+background_css = f"""
 <style>
 /* Target the main app container */
 .stApp {{
@@ -128,5 +128,6 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
