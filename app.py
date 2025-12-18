@@ -5,134 +5,86 @@ import tensorflow as tf
 import os
 import requests  # Import requests to handle the download
 
-# --- MATRIX BINARY RAIN ANIMATION (CSS) ---
-binary_css = """
+# --- MASTER CSS: BACKGROUND + ANIMATION ---
+master_css = """
 <style>
-/* 1. The Container - FIXED position to cover the screen */
-.binary-container {
+/* 1. MAIN BACKGROUND IMAGE */
+.stApp {
+    background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url("https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop");
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+/* 2. TEXT COLOR FIXES */
+h1, h2, h3, p, span, div {
+    color: white !important;
+}
+
+/* 3. MATRIX ANIMATION CONTAINER */
+.matrix-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
-    /* sitting on top of everything, but invisible to mouse clicks */
-    z-index: 99999; 
-    pointer-events: none;
+    pointer-events: none; /* Allows clicks to pass through */
+    z-index: 999999; /* Forces it to the very front */
+    
+    /* REMOVE THIS LINE AFTER YOU SEE THE ANIMATION: */
+    border: 5px solid red; 
 }
 
-/* 2. The individual digits */
-.binary-container li {
+/* 4. MATRIX DIGITS */
+.matrix-container li {
     position: absolute;
     display: block;
     list-style: none;
-    
-    /* THE MATRIX LOOK */
     color: #0f0; /* Neon Green */
-    font-family: 'Courier New', Courier, monospace; /* Monospace font */
+    font-size: 20px;
     font-weight: bold;
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.8); /* Green glow */
-    opacity: 0; /* Start invisible below screen */
+    font-family: monospace;
+    text-shadow: 0 0 5px #0f0;
     
-    /* The movement animation */
-    animation: riseUp 15s linear infinite;
-    bottom: -50px; /* Start just off-screen at the bottom */
+    /* Animation settings */
+    animation: riseUp 10s linear infinite;
+    bottom: -50px; /* Start below screen */
 }
 
-/* 3. Keyframes for upward movement */
+/* 5. MOVEMENT KEYFRAMES (UPWARDS) */
 @keyframes riseUp {
     0% {
         transform: translateY(0);
         opacity: 0;
     }
-    10% {
-       opacity: 1; /* Fade in quickly at bottom */
-    }
-    90% {
-       opacity: 0.8; /* Stay visible through the middle */
-    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
     100% {
-        transform: translateY(-110vh); /* Move all the way past the top */
-        opacity: 0; /* Fade out at the top */
+        transform: translateY(-110vh); /* Move past top of screen */
+        opacity: 0;
     }
 }
 
-/* 4. Randomizing positions, sizes, and speeds for 20 digits */
-/* Slower, bigger digits */
-.binary-container li:nth-child(1) { left: 5%; font-size: 30px; animation-duration: 18s; animation-delay: 0s; }
-.binary-container li:nth-child(2) { left: 12%; font-size: 24px; animation-duration: 15s; animation-delay: 2s; }
-.binary-container li:nth-child(3) { left: 22%; font-size: 28px; animation-duration: 20s; animation-delay: 5s; }
-.binary-container li:nth-child(4) { left: 30%; font-size: 22px; animation-duration: 16s; animation-delay: 1s; }
-.binary-container li:nth-child(5) { left: 38%; font-size: 32px; animation-duration: 19s; animation-delay: 3s; }
-.binary-container li:nth-child(6) { left: 45%; font-size: 26px; animation-duration: 14s; animation-delay: 7s; }
-.binary-container li:nth-child(7) { left: 53%; font-size: 30px; animation-duration: 22s; animation-delay: 0s; }
-.binary-container li:nth-child(8) { left: 61%; font-size: 24px; animation-duration: 17s; animation-delay: 4s; }
-.binary-container li:nth-child(9) { left: 70%; font-size: 28px; animation-duration: 21s; animation-delay: 2s; }
-.binary-container li:nth-child(10){ left: 80%; font-size: 22px; animation-duration: 15s; animation-delay: 6s; }
-
-/* Faster, smaller digits to fill gaps */
-.binary-container li:nth-child(11){ left: 8%; font-size: 18px; animation-duration: 12s; animation-delay: 9s; }
-.binary-container li:nth-child(12){ left: 18%; font-size: 16px; animation-duration: 11s; animation-delay: 1s; }
-.binary-container li:nth-child(13){ left: 28%; font-size: 20px; animation-duration: 13s; animation-delay: 4s; }
-.binary-container li:nth-child(14){ left: 34%; font-size: 14px; animation-duration: 10s; animation-delay: 8s; }
-.binary-container li:nth-child(15){ left: 42%; font-size: 18px; animation-duration: 14s; animation-delay: 2s; }
-.binary-container li:nth-child(16){ left: 58%; font-size: 16px; animation-duration: 11s; animation-delay: 5s; }
-.binary-container li:nth-child(17){ left: 66%; font-size: 20px; animation-duration: 13s; animation-delay: 1s; }
-.binary-container li:nth-child(18){ left: 75%; font-size: 14px; animation-duration: 10s; animation-delay: 3s; }
-.binary-container li:nth-child(19){ left: 88%; font-size: 18px; animation-duration: 12s; animation-delay: 7s; }
-.binary-container li:nth-child(20){ left: 95%; font-size: 16px; animation-duration: 11s; animation-delay: 0s; }
-
+/* 6. RANDOMIZED DIGITS */
+.matrix-container li:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+.matrix-container li:nth-child(2) { left: 20%; animation-duration: 12s; animation-delay: 2s; }
+.matrix-container li:nth-child(3) { left: 30%; animation-duration: 18s; animation-delay: 4s; }
+.matrix-container li:nth-child(4) { left: 40%; animation-duration: 14s; animation-delay: 1s; }
+.matrix-container li:nth-child(5) { left: 50%; animation-duration: 16s; animation-delay: 3s; }
+.matrix-container li:nth-child(6) { left: 60%; animation-duration: 13s; animation-delay: 5s; }
+.matrix-container li:nth-child(7) { left: 70%; animation-duration: 19s; animation-delay: 2s; }
+.matrix-container li:nth-child(8) { left: 80%; animation-duration: 15s; animation-delay: 6s; }
+.matrix-container li:nth-child(9) { left: 90%; animation-duration: 17s; animation-delay: 1s; }
+.matrix-container li:nth-child(10){ left: 5%;  animation-duration: 14s; animation-delay: 4s; }
 </style>
 
-<ul class="binary-container">
-    <li>0</li><li>1</li><li>0</li><li>0</li><li>1</li>
+<ul class="matrix-container">
     <li>1</li><li>0</li><li>1</li><li>0</li><li>1</li>
-    <li>0</li><li>1</li><li>1</li><li>0</li><li>0</li>
-    <li>1</li><li>0</li><li>0</li><li>1</li><li>1</li>
+    <li>0</li><li>1</li><li>0</li><li>1</li><li>0</li>
 </ul>
 """
 
-# Inject the CSS/HTML into Streamlit
-st.markdown(binary_css, unsafe_allow_html=True)
-
-# --- BACKGROUND IMAGE CSS ---
-IMAGE_URL = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop"
-
-background_css = f"""
-<style>
-/* Target the main app container */
-.stApp {{
-    /* We use a linear-gradient stacked on top of the image 
-       to create a dark transparent tint (0.7 opacity). 
-       This ensures the white text is readable over the picture.
-    */
-    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("{IMAGE_URL}");
-    
-    /* Ensure the image covers the whole screen and doesn't repeat */
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    
-    /* Keeps the background fixed while the content scrolls */
-    background-attachment: fixed;
-}}
-
-/* --- TEXT COLOR ADJUSTMENTS --- */
-/* Force nearly all text to be white for contrast against the dark background */
-h1, h2, h3, h4, h5, h6, p, div, span, label, li, .stMarkdown {{
-    color: #ffffff !important;
-}}
-
-/* Adjust file uploader text color specifically */
-[data-testid="stFileUploaderDropzoneInstructions"] > div > span {{
-     color: #e0e0e0 !important;
-}}
-</style>
-"""
-
-# Inject the CSS into the Streamlit app
-st.markdown(background_css, unsafe_allow_html=True)
-
+# INJECT INTO STREAMLIT
+st.markdown(master_css, unsafe_allow_html=True)
 
 # --- CONFIGURATION ---
 # 🔴 TODO: REPLACE THIS URL with the direct link to your .h5 file from GitHub Releases
@@ -217,6 +169,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
