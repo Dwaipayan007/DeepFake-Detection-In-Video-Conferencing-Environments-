@@ -5,6 +5,46 @@ import tensorflow as tf
 import os
 import requests  # Import requests to handle the download
 
+# --- BACKGROUND IMAGE CSS ---
+# Replace the URL below with your chosen image URL
+IMAGE_URL = "https://images.unsplash.com/photo-1580894742597-87bc8789db3d?q=80&w=2070&auto=format&fit=crop"
+
+background_css = f """
+<style>
+/* Target the main app container */
+.stApp {{
+    /* We use a linear-gradient stacked on top of the image 
+       to create a dark transparent tint (0.7 opacity). 
+       This ensures the white text is readable over the picture.
+    */
+    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("{IMAGE_URL}");
+    
+    /* Ensure the image covers the whole screen and doesn't repeat */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    
+    /* Keeps the background fixed while the content scrolls */
+    background-attachment: fixed;
+}}
+
+/* --- TEXT COLOR ADJUSTMENTS --- */
+/* Force nearly all text to be white for contrast against the dark background */
+h1, h2, h3, h4, h5, h6, p, div, span, label, li, .stMarkdown {{
+    color: #ffffff !important;
+}}
+
+/* Adjust file uploader text color specifically */
+[data-testid="stFileUploaderDropzoneInstructions"] > div > span {{
+     color: #e0e0e0 !important;
+}}
+</style>
+"""
+
+# Inject the CSS into the Streamlit app
+st.markdown(background_css, unsafe_allow_html=True)
+
+
 # --- CONFIGURATION ---
 # 🔴 TODO: REPLACE THIS URL with the direct link to your .h5 file from GitHub Releases
 MODEL_URL = "https://github.com/Dwaipayan007/DeepFake-Detection-In-Video-Conferencing-Environments-/releases/download/v1.0/deepfake_image_model.h5"
@@ -88,4 +128,5 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
