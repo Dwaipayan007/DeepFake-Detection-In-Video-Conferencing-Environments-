@@ -5,10 +5,10 @@ import tensorflow as tf
 import os
 import requests  # Import requests to handle the download
 
-# --- FLOATING BACKGROUND PARTICLES (Server-Friendly) ---
+# --- FLOATING BACKGROUND PARTICLES 
 floating_css = """
 <style>
-/* 1. The Container for particles */
+/* 1. The Container - FIXED position to cover the screen */
 .particles {
     position: fixed;
     top: 0;
@@ -16,7 +16,13 @@ floating_css = """
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: -1; /* Puts it BEHIND everything else */
+    
+    /* Z-index 0 puts it just above the background but below standard text.
+       If they are still invisible, try changing this to 999 */
+    z-index: 0; 
+    
+    /* IMPORTANT: This ensures the particles don't block your clicks! */
+    pointer-events: none;
 }
 
 /* 2. The individual squares */
@@ -27,11 +33,11 @@ floating_css = """
     width: 20px;
     height: 20px;
     background: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
-    animation: floatUp 25s linear infinite; /* The movement magic */
-    bottom: -150px; /* Start below the screen */
+    animation: floatUp 25s linear infinite;
+    bottom: -150px; /* Start below screen */
 }
 
-/* 3. Configuring specific particles (size, position, speed) */
+/* 3. Particle configurations (Same as before) */
 .particles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
 .particles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
 .particles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
@@ -43,7 +49,7 @@ floating_css = """
 .particles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
 .particles li:nth-child(10){ left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
 
-/* 4. The Animation Keyframes (Move Up + Rotate) */
+/* 4. The Animation */
 @keyframes floatUp {
     0% {
         transform: translateY(0) rotate(0deg);
@@ -72,7 +78,6 @@ floating_css = """
 </ul>
 """
 
-# Inject into Streamlit
 st.markdown(floating_css, unsafe_allow_html=True)
 # --- BACKGROUND IMAGE CSS ---
 # Replace the URL below with your chosen image URL
@@ -197,6 +202,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
