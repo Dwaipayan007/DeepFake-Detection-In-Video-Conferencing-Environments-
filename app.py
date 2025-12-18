@@ -13,25 +13,24 @@ MODEL_URL = "https://github.com/Dwaipayan007/DeepFake-Detection-In-Video-Confere
 MODEL_LOCAL_PATH = "deepfake_image_model.h5"
 
 # 1. Use caching to prevent the model from reloading (and re-downloading) on every interaction
+
 @st.cache_resource
 def load_model():
     # Check if the model file exists locally
     if not os.path.exists(MODEL_LOCAL_PATH):
-        st.warning("Model file not found locally. Downloading from GitHub Releases... (This may take a minute)")
-        try:
-            # Send a request to get the file
-            response = requests.get(MODEL_URL, stream=True)
-            response.raise_for_status()  # Check for download errors
-            
-            # Write the file to the local system
-            with open(MODEL_LOCAL_PATH, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
-            st.success("Download complete! Loading model...")
-        except Exception as e:
-            st.error(f"Failed to download model. Error: {e}")
-            st.error("Please check your MODEL_URL in the code and ensure the file exists in GitHub Releases.")
-            st.stop()
+        # This creates a temporary loading spinner instead of a permanent warning message
+        with st.spinner("Downloading model... please wait"):
+            try:
+                response = requests.get(MODEL_URL, stream=True)
+                response.raise_for_status()
+                
+                with open(MODEL_LOCAL_PATH, "wb") as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            except Exception as e:
+                st.error(f"Failed to download model. Error: {e}")
+                st.stop()
+            # The spinner automatically disappears here once the block finishes!
 
     # Load the model
     return tf.keras.models.load_model(MODEL_LOCAL_PATH)
@@ -89,3 +88,4 @@ if file:
 
 if __name__ == "__main__":
     pass
+
