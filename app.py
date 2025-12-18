@@ -4,84 +4,106 @@ from PIL import Image
 import tensorflow as tf
 import os
 import requests  # Import requests to handle the download
+import random
 
-# --- MASTER CSS: BACKGROUND + ANIMATION ---
-master_css = """
+# --- MASTER CSS: FULL SCREEN MATRIX RAIN ---
+# We generate the CSS programmatically to save space and make it truly random
+particles = ""
+css_rules = ""
+
+# Create 40 random particles
+for i in range(1, 41):
+    # Random position across the screen (0% to 100%)
+    left_pos = random.randint(1, 99) 
+    # Random speed (10s to 25s)
+    duration = random.randint(10, 25)
+    # Random delay so they don't start all at once (0s to 15s)
+    delay = random.randint(0, 15)
+    # Random size for depth effect
+    size = random.randint(15, 25)
+    
+    # 0 or 1
+    digit = random.choice(["0", "1"])
+    
+    # Build the HTML list item
+    particles += f"<li>{digit}</li>"
+    
+    # Build the CSS rule for this specific particle
+    css_rules += f"""
+    .matrix-container li:nth-child({i}) {{
+        left: {left_pos}%;
+        font-size: {size}px;
+        animation-duration: {duration}s;
+        animation-delay: {delay}s;
+    }}
+    """
+
+master_css = f"""
 <style>
 /* 1. MAIN BACKGROUND IMAGE */
-.stApp {
+.stApp {{
     background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url("https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop");
     background-size: cover;
     background-attachment: fixed;
-}
+}}
 
-/* 2. TEXT COLOR FIXES */
-h1, h2, h3, p, span, div {
+/* 2. TEXT COLORS */
+h1, h2, h3, p, span, div, label {{
     color: white !important;
-}
+}}
 
-/* 3. MATRIX ANIMATION CONTAINER */
-.matrix-container {
+/* 3. ANIMATION CONTAINER */
+.matrix-container {{
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none; /* Allows clicks to pass through */
-    z-index: 999999; /* Forces it to the very front */
-     
-}
+    pointer-events: none;
+    z-index: 999999;
+    overflow: hidden;
+}}
 
-/* 4. MATRIX DIGITS */
-.matrix-container li {
+/* 4. BASE PARTICLE STYLE */
+.matrix-container li {{
     position: absolute;
     display: block;
     list-style: none;
     color: #0f0; /* Neon Green */
-    font-size: 20px;
     font-weight: bold;
     font-family: monospace;
     text-shadow: 0 0 5px #0f0;
-    
-    /* Animation settings */
-    animation: riseUp 10s linear infinite;
+    opacity: 0;
     bottom: -50px; /* Start below screen */
-}
+    animation-name: riseUp;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}}
 
-/* 5. MOVEMENT KEYFRAMES (UPWARDS) */
-@keyframes riseUp {
-    0% {
+/* 5. MOVEMENT KEYFRAMES */
+@keyframes riseUp {{
+    0% {{
         transform: translateY(0);
         opacity: 0;
-    }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% {
-        transform: translateY(-110vh); /* Move past top of screen */
+    }}
+    10% {{ opacity: 0.8; }}
+    90% {{ opacity: 0.8; }}
+    100% {{
+        transform: translateY(-110vh);
         opacity: 0;
-    }
-}
+    }}
+}}
 
-/* 6. RANDOMIZED DIGITS */
-.matrix-container li:nth-child(1) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
-.matrix-container li:nth-child(2) { left: 20%; animation-duration: 12s; animation-delay: 2s; }
-.matrix-container li:nth-child(3) { left: 30%; animation-duration: 18s; animation-delay: 4s; }
-.matrix-container li:nth-child(4) { left: 40%; animation-duration: 14s; animation-delay: 1s; }
-.matrix-container li:nth-child(5) { left: 50%; animation-duration: 16s; animation-delay: 3s; }
-.matrix-container li:nth-child(6) { left: 60%; animation-duration: 13s; animation-delay: 5s; }
-.matrix-container li:nth-child(7) { left: 70%; animation-duration: 19s; animation-delay: 2s; }
-.matrix-container li:nth-child(8) { left: 80%; animation-duration: 15s; animation-delay: 6s; }
-.matrix-container li:nth-child(9) { left: 90%; animation-duration: 17s; animation-delay: 1s; }
-.matrix-container li:nth-child(10){ left: 5%;  animation-duration: 14s; animation-delay: 4s; }
+/* 6. INJECT GENERATED RANDOM RULES */
+{css_rules}
+
 </style>
 
 <ul class="matrix-container">
-    <li>1</li><li>0</li><li>1</li><li>0</li><li>1</li>
-    <li>0</li><li>1</li><li>0</li><li>1</li><li>0</li>
+    {particles}
 </ul>
 """
 
-# INJECT INTO STREAMLIT
 st.markdown(master_css, unsafe_allow_html=True)
 
 # --- CONFIGURATION ---
@@ -167,6 +189,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
