@@ -6,105 +6,103 @@ import os
 import requests  # Import requests to handle the download
 import random
 
-# --- MASTER CSS: FULL SCREEN MATRIX RAIN ---
-# We generate the CSS programmatically to save space and make it truly random
-particles = ""
-css_rules = ""
+import streamlit as st
 
-# Create 40 random particles
-for i in range(1, 41):
-    # Random position across the screen (0% to 100%)
-    left_pos = random.randint(1, 99) 
-    # Random speed (10s to 25s)
-    duration = random.randint(10, 25)
-    # Random delay so they don't start all at once (0s to 15s)
-    delay = random.randint(0, 15)
-    # Random size for depth effect
-    size = random.randint(15, 25)
-    
-    # 0 or 1
-    digit = random.choice(["0", "1"])
-    
-    # Build the HTML list item
-    particles += f"<li>{digit}</li>"
-    
-    # Build the CSS rule for this specific particle
-    css_rules += f"""
-    .matrix-container li:nth-child({i}) {{
-        left: {left_pos}%;
-        font-size: {size}px;
-        animation-duration: {duration}s;
-        animation-delay: {delay}s;
-    }}
-    """
-
-master_css = f"""
+# --- HARDCODED MATRIX RAIN (No Python Logic to Break) ---
+matrix_css = """
 <style>
-/* 1. MAIN BACKGROUND IMAGE */
-.stApp {{
-    background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url("https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop");
+/* 1. BACKGROUND IMAGE */
+.stApp {
+    background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url("https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965&auto=format&fit=crop");
     background-size: cover;
     background-attachment: fixed;
-}}
+}
 
 /* 2. TEXT COLORS */
-h1, h2, h3, p, span, div, label {{
+h1, h2, h3, p, span, div, label {
     color: white !important;
-}}
+}
 
 /* 3. ANIMATION CONTAINER */
-.matrix-container {{
+.matrix-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none;
-    z-index: 999999;
+    pointer-events: none; /* Clicks go through */
+    z-index: 999999; /* Always on top */
     overflow: hidden;
-}}
+    /* DEBUG LINE: If you don't see this Red Border, the code isn't running. */
+    border: 2px solid red; 
+}
 
-/* 4. BASE PARTICLE STYLE */
-.matrix-container li {{
+/* 4. PARTICLE STYLE */
+.matrix-container li {
     position: absolute;
     display: block;
     list-style: none;
     color: #0f0; /* Neon Green */
+    font-size: 20px;
     font-weight: bold;
     font-family: monospace;
-    text-shadow: 0 0 5px #0f0;
     opacity: 0;
-    bottom: -50px; /* Start below screen */
-    animation-name: riseUp;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}}
+    bottom: -50px;
+    animation: riseUp 15s linear infinite;
+}
 
-/* 5. MOVEMENT KEYFRAMES */
-@keyframes riseUp {{
-    0% {{
-        transform: translateY(0);
-        opacity: 0;
-    }}
-    10% {{ opacity: 0.8; }}
-    90% {{ opacity: 0.8; }}
-    100% {{
-        transform: translateY(-110vh);
-        opacity: 0;
-    }}
-}}
+/* 5. MOVEMENT */
+@keyframes riseUp {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-110vh); opacity: 0; }
+}
 
-/* 6. INJECT GENERATED RANDOM RULES */
-{css_rules}
+/* 6. MANUAL POSITIONS (Left-to-Right Spread) */
+.matrix-container li:nth-child(1) { left: 5%; animation-duration: 12s; animation-delay: 0s; }
+.matrix-container li:nth-child(2) { left: 10%; animation-duration: 15s; animation-delay: 2s; }
+.matrix-container li:nth-child(3) { left: 15%; animation-duration: 10s; animation-delay: 4s; }
+.matrix-container li:nth-child(4) { left: 20%; animation-duration: 18s; animation-delay: 1s; }
+.matrix-container li:nth-child(5) { left: 25%; animation-duration: 14s; animation-delay: 3s; }
+.matrix-container li:nth-child(6) { left: 30%; animation-duration: 16s; animation-delay: 5s; }
+.matrix-container li:nth-child(7) { left: 35%; animation-duration: 13s; animation-delay: 2s; }
+.matrix-container li:nth-child(8) { left: 40%; animation-duration: 19s; animation-delay: 0s; }
+.matrix-container li:nth-child(9) { left: 45%; animation-duration: 11s; animation-delay: 4s; }
+.matrix-container li:nth-child(10){ left: 50%; animation-duration: 17s; animation-delay: 1s; }
+.matrix-container li:nth-child(11){ left: 55%; animation-duration: 12s; animation-delay: 3s; }
+.matrix-container li:nth-child(12){ left: 60%; animation-duration: 15s; animation-delay: 5s; }
+.matrix-container li:nth-child(13){ left: 65%; animation-duration: 10s; animation-delay: 2s; }
+.matrix-container li:nth-child(14){ left: 70%; animation-duration: 18s; animation-delay: 0s; }
+.matrix-container li:nth-child(15){ left: 75%; animation-duration: 14s; animation-delay: 4s; }
+.matrix-container li:nth-child(16){ left: 80%; animation-duration: 16s; animation-delay: 1s; }
+.matrix-container li:nth-child(17){ left: 85%; animation-duration: 13s; animation-delay: 3s; }
+.matrix-container li:nth-child(18){ left: 90%; animation-duration: 19s; animation-delay: 5s; }
+.matrix-container li:nth-child(19){ left: 95%; animation-duration: 11s; animation-delay: 2s; }
+.matrix-container li:nth-child(20){ left: 2%;  animation-duration: 17s; animation-delay: 6s; }
+.matrix-container li:nth-child(21){ left: 12%; animation-duration: 14s; animation-delay: 7s; }
+.matrix-container li:nth-child(22){ left: 22%; animation-duration: 12s; animation-delay: 3s; }
+.matrix-container li:nth-child(23){ left: 32%; animation-duration: 16s; animation-delay: 1s; }
+.matrix-container li:nth-child(24){ left: 42%; animation-duration: 13s; animation-delay: 5s; }
+.matrix-container li:nth-child(25){ left: 52%; animation-duration: 15s; animation-delay: 2s; }
+.matrix-container li:nth-child(26){ left: 62%; animation-duration: 11s; animation-delay: 4s; }
+.matrix-container li:nth-child(27){ left: 72%; animation-duration: 18s; animation-delay: 6s; }
+.matrix-container li:nth-child(28){ left: 82%; animation-duration: 14s; animation-delay: 1s; }
+.matrix-container li:nth-child(29){ left: 92%; animation-duration: 16s; animation-delay: 3s; }
+.matrix-container li:nth-child(30){ left: 98%; animation-duration: 12s; animation-delay: 5s; }
 
 </style>
 
 <ul class="matrix-container">
-    {particles}
+    <li>0</li><li>1</li><li>0</li><li>1</li><li>0</li><li>1</li>
+    <li>0</li><li>1</li><li>0</li><li>1</li><li>0</li><li>1</li>
+    <li>1</li><li>0</li><li>1</li><li>0</li><li>1</li><li>0</li>
+    <li>0</li><li>1</li><li>0</li><li>1</li><li>0</li><li>1</li>
+    <li>1</li><li>0</li><li>1</li><li>0</li><li>1</li><li>0</li>
 </ul>
 """
 
-st.markdown(master_css, unsafe_allow_html=True)
+st.markdown(matrix_css, unsafe_allow_html=True)
 
 # --- CONFIGURATION ---
 # 🔴 TODO: REPLACE THIS URL with the direct link to your .h5 file from GitHub Releases
@@ -189,6 +187,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
