@@ -5,10 +5,10 @@ import tensorflow as tf
 import os
 import requests  # Import requests to handle the download
 
-# --- FLOATING BACKGROUND PARTICLES 
+# --- FLOATING BACKGROUND PARTICLES (FORCE FRONT) ---
 floating_css = """
 <style>
-/* 1. The Container - FIXED position to cover the screen */
+/* 1. The Container - FORCE to top layer */
 .particles {
     position: fixed;
     top: 0;
@@ -17,11 +17,11 @@ floating_css = """
     height: 100%;
     overflow: hidden;
     
-    /* Z-index 0 puts it just above the background but below standard text.
-       If they are still invisible, try changing this to 999 */
-    z-index: 0; 
+    /* 99999 ensures it sits on top of EVERYTHING (Images, text, menus) */
+    z-index: 99999; 
     
-    /* IMPORTANT: This ensures the particles don't block your clicks! */
+    /* CRITICAL: This makes the overlay 'invisible' to your mouse. 
+       You can click buttons 'through' the particles. */
     pointer-events: none;
 }
 
@@ -32,12 +32,15 @@ floating_css = """
     list-style: none;
     width: 20px;
     height: 20px;
-    background: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+    
+    /* Increased opacity to 0.5 so you can DEFINITELY see them for testing */
+    background: rgba(255, 255, 255, 0.5); 
+    
     animation: floatUp 25s linear infinite;
-    bottom: -150px; /* Start below screen */
+    bottom: -150px;
 }
 
-/* 3. Particle configurations (Same as before) */
+/* 3. Particle configurations */
 .particles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
 .particles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
 .particles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
@@ -202,6 +205,7 @@ if file:
 
 if __name__ == "__main__":
     pass
+
 
 
 
