@@ -17,3 +17,4 @@ Architecture:
 3.	Inference: The processed frames are passed to a custom .h5 model (based on Xception/ResNet/MobileNet).
 4.	Output: A probability score is generated. If the "Fake" probability exceeds a set threshold (e.g., 0.5), the system alerts the user.
 
+Note: The pre-trained model file (.h5) is hosted via Git LFS (Large File Storage) or can be downloaded from the Releases tab due to its size.
