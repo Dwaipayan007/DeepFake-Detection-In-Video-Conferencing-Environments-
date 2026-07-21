@@ -47,7 +47,7 @@ st.markdown(background_css, unsafe_allow_html=True)
 
 # --- CONFIGURATION ---
 # 🔴 TODO: REPLACE THIS URL with the direct link to your .h5 file from GitHub Releases
-MODEL_URL = "https://github.com/Dwaipayan007/DeepFake-Detection-In-Video-Conferencing-Environments-/releases/download/v1.0/deepfake_image_model.h5"
+MODEL_URL = "https://github.com/Dwaipayan007/DeepFake-Detection-In-Video-Conferencing-Environments-/releases/download/v2.0/deepfake_image_model.h5"
 
 # This is where the file will be saved inside the app's folder
 MODEL_LOCAL_PATH = "deepfake_image_model.h5"
